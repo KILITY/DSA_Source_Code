@@ -84,9 +84,6 @@ int main() {
                 cout << next_patient.name << "\n";
             }
         }
-
-
-
     }
     return 0;
 }
