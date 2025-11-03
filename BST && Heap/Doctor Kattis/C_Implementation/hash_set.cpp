@@ -34,7 +34,7 @@
  * PARAMETERS:
  *   a = running sum of character values
  *   b = running sum of the running sums (adds positional weight)
- *   MOD = modulo value (65521) to keep numbers manageable
+ *   MOD = modulo value (65521) to keep numbers manageabl\'
  *
  * WHY TWO VALUES (a and b)?
  *   Using both components gives us a better distribution - reduces collisions
@@ -91,9 +91,8 @@ static unsigned index_from_hash(long long h, unsigned cap) {
 
 hash_map_t* init_hash_map() {
     hash_map_t* map = (hash_map_t*)malloc(sizeof(hash_map_t));
-    map->capacity = DEFAULT_HASH_SET_CAPACITY;  // Initial size (usually 16)
-    map->length = 0;  // Currently storing 0 items
-    // calloc allocates memory AND zeros it out (all entries start empty)
+    map->capacity = DEFAULT_HASH_SET_CAPACITY;
+    map->length = 0;
     map->table = (hash_entry_t*)calloc(map->capacity, sizeof(hash_entry_t));
     return map;
 }

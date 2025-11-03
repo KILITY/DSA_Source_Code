@@ -26,7 +26,6 @@ class Patient {
     Patient(string name, int severity, int arrival)
     : name(move(name)), severity(severity), arrival(arrival) {}
 
-
     bool operator<(const Patient& other) const {
         if (severity != other.severity) {
             return severity > other.severity; // higher severity first
