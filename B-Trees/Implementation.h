@@ -16,6 +16,21 @@ struct BTreeNode {
     void traverse();               // output in sorted order
     void insertNonFull(int k);     // insert when node is NON-full
     void splitChild(int i, BTreeNode* y); // split full child - the last two functions specific to B-Trees
+
+    //All of these Just for Delete VVV
+    void remove(int k);
+    int findKey(int k);
+
+    int getPred(int idx);
+    int getSucc(int idx);
+
+    void removeFromLeaf(int idx);
+    void removeFromNonLeaf(int idx);
+
+    void fill(int idx);
+    void borrowFromPrev(int idx);
+    void borrowFromNext(int idx);
+    void merge(int idx);
 };
 
 struct BTree {
@@ -28,6 +43,7 @@ struct BTree {
     void traverse();
     BTreeNode* search(int k);
     void insert(int k);
+    void remove(int k);
 };
 
 #endif
