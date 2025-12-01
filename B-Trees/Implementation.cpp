@@ -47,7 +47,7 @@ void BTreeNode::insertNonFull(int k) {
             i--;
         i++; //we go 1 after the child we need so we take a step back
 
-        // If child is full → split it
+        // If child is full -> split it
         if ((int)children[i]->keys.size() == 2 * t - 1) {
             splitChild(i, children[i]);
             if (keys[i] < k)
@@ -58,7 +58,7 @@ void BTreeNode::insertNonFull(int k) {
 }
 
 void BTreeNode::splitChild(int i, BTreeNode* y) {  //This is the core of the BTree it basically splits a node when it is full and moves up the middle key
-    // y is full: has 2t-1 keys. Create new node z.
+    // y is full so it has 2t-1 keys. Create new node z.
     BTreeNode* z = new BTreeNode(y->t, y->leaf);
 
     // Move last (t-1) keys of y to z
