@@ -1,4 +1,5 @@
-// Credits to this video for explanations: https://www.youtube.com/watch?v=K1a2Bk8NrYQ&t=9s
+// Credits to this video for explanations: https://www.youtube.com/watch?v=K1a2Bk8NrYQ&t=9s <- This contains a detailed explanaition of this datastructure
+// the video present visually how it works, recommended for understanding deletion
 
 #include <bits/stdc++.h>
 
@@ -18,6 +19,11 @@ int main() {
         tree.insert(array[i]);
 
     std::cout << "B-Tree traversal (sorted): ";
+    tree.traverse();
+    std::cout << "\n";
+
+    tree.remove(10);
+    std::cout << "B-Tree traversal (after deletion): ";
     tree.traverse();
     std::cout << "\n";
 
