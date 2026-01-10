@@ -61,6 +61,8 @@ void BTreeNode::splitChild(int i, BTreeNode* y) {  //This is the core of the BTr
     // y is full so it has 2t-1 keys. Create new node z.
     BTreeNode* z = new BTreeNode(y->t, y->leaf);
 
+    int midKey = y->keys[t - 1];
+
     // Move last (t-1) keys of y to z
     for (int j = 0; j < t - 1; j++)
         z->keys.push_back(y->keys[j + t]);
@@ -79,8 +81,19 @@ void BTreeNode::splitChild(int i, BTreeNode* y) {  //This is the core of the BTr
     // Insert new child into parent node
     children.insert(children.begin() + i + 1, z);
 
-    // Insert midle key of y into this node
-    keys.insert(keys.begin() + i, y->keys[t - 1]);
+    keys.insert(keys.begin() + i, midKey);
+}
+
+void BTreeNode::traverse() {
+    int i;
+    for (i = 0; i < (int)keys.size(); i++) {
+        if (!leaf)
+            children[i]->traverse();
+        std::cout << keys[i] << " ";
+    }
+
+    if (!leaf)
+        children[i]->traverse();
 }
 
 BTree::BTree(int _t) {
@@ -124,18 +137,6 @@ void BTree::insert(int k) {
     }
 }
 
-void BTreeNode::traverse() {
-    int i;
-    for (i = 0; i < (int)keys.size(); i++) {
-        if (!leaf)
-            children[i]->traverse();
-        std::cout << keys[i] << " ";
-    }
-
-    if (!leaf)
-        children[i]->traverse();
-}
-
 void BTree::traverse() {
     if (root)
         root->traverse();
@@ -145,7 +146,7 @@ void BTree::traverse() {
 
 int BTreeNode::findKey(int k) {
     int idx = 0;
-    while (idx < keys.size() && keys[idx] < k)
+    while (idx < (int)keys.size() && keys[idx] < k)
         ++idx;
     return idx;
 }
@@ -155,12 +156,13 @@ void BTree::remove(int k) {
 
     root->remove(k);
 
-    if (root->keys.size() == 0) {
+    if ((int)root->keys.size() == 0) {
         BTreeNode* tmp = root;
         if (root->leaf)
             root = nullptr;
         else
             root = root->children[0];
+        tmp->children.clear();
         delete tmp;
     }
 }
@@ -169,7 +171,7 @@ void BTreeNode::remove(int k) {
     int idx = findKey(k);
 
     // Case 1: key found in this node
-    if (idx < keys.size() && keys[idx] == k) {
+    if (idx < (int)keys.size() && keys[idx] == k) {
         if (leaf)
             removeFromLeaf(idx);
         else
@@ -178,11 +180,11 @@ void BTreeNode::remove(int k) {
     else {
         if (leaf) return; // Key not found
 
-        bool flag = (idx == keys.size());
-        if (children[idx]->keys.size() < t)
+        bool flag = (idx == (int)keys.size());
+        if ((int)children[idx]->keys.size() < t)
             fill(idx);
 
-        if (flag && idx > keys.size())
+        if (flag && idx > (int)keys.size())
             children[idx - 1]->remove(k);
         else
             children[idx]->remove(k);
@@ -197,14 +199,14 @@ void BTreeNode::removeFromNonLeaf(int idx) {
     int k = keys[idx];
 
     // Case 2A: predecessor child >= t keys
-    if (children[idx]->keys.size() >= t) {
+    if ((int)children[idx]->keys.size() >= t) {
         int pred = getPred(idx);
         keys[idx] = pred;
         children[idx]->remove(pred);
     }
 
     // Case 2B: successor child >= t keys
-    else if (children[idx + 1]->keys.size() >= t) {
+    else if ((int)children[idx + 1]->keys.size() >= t) {
         int succ = getSucc(idx);
         keys[idx] = succ;
         children[idx + 1]->remove(succ);
@@ -220,8 +222,8 @@ void BTreeNode::removeFromNonLeaf(int idx) {
 int BTreeNode::getPred(int idx) {
     BTreeNode* cur = children[idx];
     while (!cur->leaf)
-        cur = cur->children[cur->keys.size()];
-    return cur->keys[cur->keys.size() - 1];
+        cur = cur->children[(int)cur->keys.size()];
+    return cur->keys[(int)cur->keys.size() - 1];
 }
 
 int BTreeNode::getSucc(int idx) {
@@ -232,12 +234,12 @@ int BTreeNode::getSucc(int idx) {
 }
 
 void BTreeNode::fill(int idx) {
-    if (idx != 0 && children[idx - 1]->keys.size() >= t)
+    if (idx != 0 && (int)children[idx - 1]->keys.size() >= t)
         borrowFromPrev(idx);
-    else if (idx != keys.size() && children[idx + 1]->keys.size() >= t)
+    else if (idx != (int)keys.size() && (int)children[idx + 1]->keys.size() >= t)
         borrowFromNext(idx);
     else {
-        if (idx != keys.size())
+        if (idx != (int)keys.size())
             merge(idx);
         else
             merge(idx - 1);
@@ -278,12 +280,13 @@ void BTreeNode::merge(int idx) {
 
     child->keys.push_back(keys[idx]);
 
-    for (int i = 0; i < sibling->keys.size(); i++)
+    for (int i = 0; i < (int)sibling->keys.size(); i++)
         child->keys.push_back(sibling->keys[i]);
 
     if (!child->leaf) {
-        for (int i = 0; i < sibling->children.size(); i++)
+        for (int i = 0; i < (int)sibling->children.size(); i++)
             child->children.push_back(sibling->children[i]);
+        sibling->children.clear();
     }
 
     keys.erase(keys.begin() + idx);

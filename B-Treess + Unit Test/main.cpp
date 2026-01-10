@@ -4,6 +4,7 @@
 #include <bits/stdc++.h>
 
 #include "Implementation.h"
+#include "Validator.h"
 
 int main() {
     // Constraints:
@@ -35,6 +36,14 @@ int main() {
     int k2 = 15;
     std::cout << "Search " << k2 << ": "
               << (tree.search(k2) ? "FOUND" : "NOT FOUND") << "\n";
+
+    //Tests for T=3
+    std::cout << runBTreeGeneratedTest(3, 1000, 123) << "\n";
+    std::cout << runBTreeGeneratedTest(3, 10000, 123) << "\n";
+
+    //Tests for T=10
+    std::cout << runBTreeGeneratedTest(10, 1000, 123) << "\n";
+    std::cout << runBTreeGeneratedTest(10, 10000, 123) << "\n";
 
     return 0;
 }
